@@ -1,0 +1,13 @@
+# emacs droppings
+*~
+.\#*
+\#*
+
+# erlang droppings
+*.crashdump
+/_build/
+erl_crash.dump
+
+# generated
+src/me2_lex.erl
+src/me2_parse.erl
