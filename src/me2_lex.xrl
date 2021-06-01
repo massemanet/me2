@@ -1,13 +1,16 @@
 Definitions.
 
 % delimiters
-DEL = (\[|\]|#{|{|}|0x\(|\(|\))
+DEL = (\[|\]|#{|{|}|\(|\))
 
 % separators
-SEP = (::|:|,)
+SEP = (::|:|;|,)
 
 % wildcards
 WILD = (@|_)
+
+% bistring
+ZX = 0x
 
 % whitespace
 WS = [\n\r\t\s]
@@ -51,7 +54,7 @@ B1 = !
 B2 = (&&|\|\|)
 
 % name
-NAME = ([a-z][a-zA-Z0-9_]*)
+IDENTIFIER = ([a-z][a-zA-Z0-9_]*)
 
 % type
 TYPE = ([A-Z][a-zA-Z0-9_]*)
@@ -61,6 +64,7 @@ PNAME = !{NAME}
 
 % equation name
 ENAME = #{NAME}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Rules.
 
@@ -98,17 +102,21 @@ Rules.
 {FLOAT}{EXP} :
   {token, {'delta', TokenLine, me2_lx:delta_floatexp(TokenChars)}}.
 
-% bitstring
-0x{HEX}+(:[123])? :
+% bitstring literal
+{ZX}{HEX}+(:[123])? :
   {token, {'bits', TokenLine, TokenChars}}.
+
+% bitstring de/constructor
+{ZX} :
+  {token, {'0x', TokenLine}}.
 
 % string
 "{CHAR}*" :
   {token, {'string', TokenLine, me2_lx:trim(TokenChars)}}.
 
 
-{NAME} :
-  {token, {'aname', TokenLine, TokenChars}}.
+{IDENTIFIER} :
+  {token, {'identifier', TokenLine, TokenChars}}.
 
 {PNAME} :
   {token, {'pname', TokenLine, TokenChars}}.
@@ -119,8 +127,21 @@ Rules.
 {TYPE} :
   {token, {'type', TokenLine, TokenChars}}.
 
-% as themselves
-{WORD}|{SEP}|{DEL}|{WILD}|{A2}|{B1}|{B2}|{C2} :
+% boolean
+{BOOLEAN} :
+  {token, {'boolean', TokenLine, list_to_atom(TokenChars)}}.
+
+{NULL} :
+  {token, {'null', TokenLine}}.
+
+% as thmselves
+{SEP}|{DEL}|{WILD} :
   {token, {list_to_atom(TokenChars), TokenLine}}.
+
+{A2}|{B2}|{C2} :
+  {token, {binary_op, TokenLine, list_to_atom(TokenChars)}}.
+
+{B1} :
+  {token, {unary_op, TokenLine, list_to_atom(TokenChars)}}.
 
 Erlang code.
