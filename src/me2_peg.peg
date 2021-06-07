@@ -34,17 +34,20 @@ math_expr <- '(' math_expr ')' / math_expr math_op math_expr / identifier / numb
 expressions <- expression ( ws? ';' ws? expression)* ws? ( ';' ws? )?
 `me2_parse:expressions(Node)`;
 
-expression <- ( literal / match / unary / switch / application / lambda_def / list / dict / pipe ) maybe_binary
+expression <- non_recursive_expression maybe_binary / '(' expression ')'
 `me2_parse:expression(Node)`;
+
+non_recursive_expression <- literal / match / unary / switch / application / lambda_def / list / dict / pipe
+~;
+
+maybe_binary <- ws? binary_op ws? expression / ''
+`me2_parse:binary(Node)`;
 
 match <- pattern ws? '=' ws? expression
 `me2_parse:match(Node)`;
 
 unary <- unary_op ws? expression
 `me2_parse:unary(Node)`;
-
-maybe_binary <- ws? binary_op ws? expression / ''
-`me2_parse:binary(Node)`;
 
 switch <- '?' ws? expression ws? clauses
 `me2_parse:switch(Node)`;
@@ -62,12 +65,12 @@ pipe <- pipe_elem ws? '|' ws? pipe_elem ( ws? '|' ws? pipe_elem )*
 `me2_parse:pipe(Node)`;
 
 pipe_elem <- lambda_def ws? pipe_arglist / identifier ws? pipe_arglist
-`me2_parse:application(Node)`;
+`me2_parse:pipe_elem(Node)`;
 
 pipe_arglist <- '(' ws? pipe_expression_list ws? ')' / '(' ws? ')'
 `me2_parse:pipe_arglist(Node)`;
 
-pipe_expression_list <- atexpr ( ws? ',' ws? atexpr )* ws?
+pipe_expression_list <- atexpr ( ws? ',' ws? atexpr )*
 `me2_parse:pipe_expression_list(Node)`;
 
 arglist <- '(' ws? expression_list ws? ')' / '(' ws? ')'

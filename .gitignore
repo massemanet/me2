@@ -9,5 +9,5 @@
 erl_crash.dump
 
 # generated
-src/me2_lex.erl
-src/me2_parse.erl
+src/me2_peg_lex.erl
+src/me2_peg_parse.erl
