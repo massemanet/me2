@@ -2,31 +2,40 @@ Header "%% @hidden".
 
 Nonterminals
  rules rule
- subclauses subclause
+ clauses
+ seq exp rexp
  term.
 
 Terminals
-  '<-' '(' ')'
-  '/' '*' '+' '?' '!' '&'
- 'id'.
+  '<-' '(' ')' ';'
+ '/'
+  '*' '+' '?' '!' '&'
+ 'id' 'string' 'range'.
 
 Rootsymbol rules.
 
-rules -> rule rules : ['$1'|'$2'].
+rules -> rule ';' : ['$1'].
+rules -> rule ';' rules : ['$1'|'$2'].
 
-rule -> 'id' '<-' subclauses : {'$1', '$3'}.
+rule -> 'id' '<-' clauses : {rule, element(3, '$1'), '$3'}.
 
-subclauses -> subclause : ['$1'].
-subclauses -> subclause '/' subclauses : ['$1'|'$2'].
-subclauses -> '(' subclauses ')' : '$2'.
+clauses -> seq : ['$1'].
+clauses -> seq '/' clauses : ['$1'|'$3'].
 
-subclause -> term : ['$1'].
-subclause -> term subclause : ['$1'|'$2'].
+seq -> exp : ['$1'].
+seq -> exp seq : ['$1'|'$2'].
 
-term -> '(' ')' : empty.
-term -> 'id' : '$1'.
-term -> term '+' : {'plus', '$1'}.
-term -> term '*' : {'star', '$1'}.
-term -> term '?' : {'q', '$1'}.
-term -> '!' term : {'not', '$2'}.
-term -> '&' term : {'and', '$2'}.
+exp -> rexp '+' : {'one_or_more', '$1'}.
+exp -> rexp '*' : {'zero_or_more', '$1'}.
+exp -> rexp '?' : {'optional', '$1'}.
+exp -> '!' rexp : {'not_followed_by', '$2'}.
+exp -> '&' rexp : {'followed_by', '$2'}.
+exp -> rexp     : '$1'.
+
+rexp -> '(' clauses ')' : '$1'.
+rexp -> term : '$1'.
+
+term -> '(' ')' : '()'.
+term -> 'id'    : '$1'.
+term -> 'range' : '$1'.
+term -> 'string' : '$1'.

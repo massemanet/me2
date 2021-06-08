@@ -6,9 +6,9 @@ COMMENT = (//.*)
 
 OP = /|\*|\+|\&|\!|\?
 
-SEP = <-|\(|\)
+SEP = <-|\(|\)|;
 
-CHAR = [a-zA_Z0-9_]
+CHAR = [a-zA-Z0-9_]
 
 ID = {CHAR}+
 
@@ -19,11 +19,11 @@ Rules.
 {WS}|{COMMENT} :
   skip_token.
 
-{OP} :
-  {token, {'op', TokenLine, TokenChars}}.
+{OP}|{SEP} :
+  {token, {list_to_atom(TokenChars), TokenLine}}.
 
-{SEP} :
-  {token, {'sep', TokenLine, TokenChars}}.
+'{CHAR}+' :
+  {token, {'string', TokenLine, trim(TokenChars)}}.
 
 {RANGE} :
   {token, {'range', TokenLine, TokenChars}}.
@@ -32,3 +32,6 @@ Rules.
   {token, {'id', TokenLine, TokenChars}}.
 
 Erlang code.
+
+trim(S) ->
+    lists:reverse(tl(lists:reverse(tl(S)))).
