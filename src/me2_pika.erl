@@ -1,11 +1,11 @@
--module(me2_peg).
+-module(me2_pika).
 
 -export(
    [file/1,
     string/1]).
 
 file(File) ->
-    try string(lift(file:read_file(File)))
+    try string(binary_to_list(lift(file:read_file(File))))
     catch throw:Error -> {error, Error}
     end.
 

@@ -8,9 +8,11 @@ OP = /|\*|\+|\&|\!|\?
 
 SEP = <-|\(|\)|;
 
-CHAR = [a-zA-Z0-9_]
+ALNUM = [a-zA-Z0-9_]
 
-ID = {CHAR}+
+CHAR = [\s-~]
+
+ID = {ALNUM}+
 
 RANGE = \[{CHAR}-{CHAR}\]
 
