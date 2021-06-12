@@ -10,9 +10,11 @@ SEP = <-|\(|\)|;
 
 ALNUM = [a-zA-Z0-9_]
 
-CHAR = [\s-~]
+STRING = '([\s-\&\(-\~]|\\\')*'
 
 ID = {ALNUM}+
+
+CHAR = ([\s-\~]|\\[strn])
 
 RANGE = \[{CHAR}-{CHAR}\]
 
@@ -24,7 +26,7 @@ Rules.
 {OP}|{SEP} :
   {token, {list_to_atom(TokenChars), TokenLine}}.
 
-'{CHAR}+' :
+{STRING} :
   {token, {'string', TokenLine, trim(TokenChars)}}.
 
 {RANGE} :

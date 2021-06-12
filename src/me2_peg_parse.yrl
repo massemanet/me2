@@ -15,7 +15,7 @@ Terminals
 Rootsymbol rules.
 
 rules -> rule ';' : ['$1'].
-rules -> rule ';' rules : ['$1'|'$2'].
+rules -> rule ';' rules : ['$1'|'$3'].
 
 rule -> 'id' '<-' clauses : {rule, val('$1'), '$3'}.
 

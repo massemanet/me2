@@ -98,7 +98,7 @@ frac <- '.' [0-9]+ ;
 
 bits <- '0x' hexdigit+ bits_trailer ;
 
-string <- '"' ( '\\"' / ( !'"' . ) )* '"' ;
+string <- '"' ( '\"' / !'"' [\s-~] )* '"' ;
 
 boolean <- 'true' / 'false' ;
 
