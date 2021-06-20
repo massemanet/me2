@@ -32,7 +32,7 @@ exp -> '!' rexp : {'not_followed_by', '$2'}.
 exp -> '&' rexp : {'followed_by', '$2'}.
 exp -> rexp     : '$1'.
 
-rexp -> '(' clauses ')' : '$1'.
+rexp -> '(' clauses ')' : '$2'.
 rexp -> term            : '$1'.
 
 term -> '(' ')'  : '()'.
