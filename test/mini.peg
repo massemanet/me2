@@ -1,0 +1,5 @@
+root <- expr ;
+
+expr <- '(' expr ')' / expr '+' expr / id ;
+
+id <- ( [a-z] / '_' )+ ;
